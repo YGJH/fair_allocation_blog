@@ -25,7 +25,6 @@ const locales = {
     labUrl: 'https://fairallocation.kuan216.win/zh-TW',
     kicker: '研究導讀',
     start: '開始閱讀',
-    contents: '文章章節',
     figureAria: '三件不可分割物品沿著分配線，在兩位參與者之間移動。',
     figureCaption: '同一組物品，不只一種公平。',
     leftAgent: '參與者 A',
@@ -46,7 +45,6 @@ const locales = {
     labUrl: 'https://fairallocation.kuan216.win/en',
     kicker: 'A guide to the research',
     start: 'Start reading',
-    contents: 'On this page',
     figureAria: 'Three indivisible goods moving between two people along an allocation line.',
     figureCaption: 'One set of goods. More than one idea of fair.',
     leftAgent: 'Person A',
@@ -106,17 +104,10 @@ function parseArticle(markdown, file) {
   if (!header) throw new Error(`Invalid article header: ${file}`);
 
   const body = markdown.slice(header[0].length);
-  const sections = [...body.matchAll(/^## (.+)$/gm)]
-    .map((match) => ({ title: match[1], id: headingId(match[1]) }))
-    .filter(({ title }) => !['閱讀完整論文', '參考資料', 'Read the full paper', 'References'].includes(title));
-
-  return { title: header[1], description: header[2], body, sections };
+  return { title: header[1], description: header[2], body };
 }
 
 function template(locale, ui, article, articleHtml) {
-  const sections = article.sections.map(({ title, id }) => `
-              <li><a href="#${escapeHtml(id)}">${escapeHtml(title)}</a></li>`).join('');
-
   return `<!doctype html>
 <html lang="${locale}">
 <head>
@@ -164,12 +155,6 @@ function template(locale, ui, article, articleHtml) {
     </section>
 
     <div class="reading-layout">
-      <nav class="chapter-rail" aria-label="${ui.contents}">
-        <span>${ui.contents}</span>
-        <ol>${sections}
-        </ol>
-      </nav>
-
       <article id="research-article" class="article">
 ${articleHtml}
       </article>
