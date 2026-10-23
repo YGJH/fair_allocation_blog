@@ -21,6 +21,8 @@ const locales = {
     home: './',
     alternate: './en/',
     alternateLabel: 'English',
+    labLabel: '前往分配實驗室',
+    labUrl: 'https://fairallocation.kuan216.win/zh-TW',
     kicker: '研究導讀',
     start: '開始閱讀',
     contents: '文章章節',
@@ -40,6 +42,8 @@ const locales = {
     home: '../',
     alternate: '../',
     alternateLabel: '繁體中文',
+    labLabel: 'Open allocation lab',
+    labUrl: 'https://fairallocation.kuan216.win/en',
     kicker: 'A guide to the research',
     start: 'Start reading',
     contents: 'On this page',
@@ -133,6 +137,7 @@ function template(locale, ui, article, articleHtml) {
     <div class="header-inner">
       <a class="brand" href="${ui.home}"><span class="brand-symbol" aria-hidden="true">◒</span><span>${ui.brand}</span></a>
       <nav class="site-nav" aria-label="${ui.navLabel}">
+        <a class="lab-link" href="${ui.labUrl}">${ui.labLabel}</a>
         <a class="language-switch" href="${ui.alternate}" hreflang="${locale === 'en' ? 'zh-TW' : 'en'}">${ui.alternateLabel}</a>
       </nav>
     </div>
