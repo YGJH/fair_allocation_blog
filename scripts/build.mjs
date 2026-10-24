@@ -24,6 +24,15 @@ const locales = {
     labLabel: '前往分配實驗室',
     labUrl: 'https://fairallocation.kuan216.win/zh-TW',
     kicker: '研究導讀',
+    advisorsLabel: '指導教授',
+    creditSeparator: '：',
+    firstAdvisorDepartment: '海洋大學 資訊工程學系',
+    firstAdvisorName: '林莊傑 教授',
+    secondAdvisorDepartment: '陽明交通大學 資訊管理學系',
+    secondAdvisorName: '陳柏安 教授',
+    studentsLabel: '學生',
+    studentDepartment: '海大資工',
+    studentNames: ['楊子賢', '管于德', '陳羿豪', '吳承睿'],
     start: '開始閱讀',
     figureAria: '三件不可分割物品沿著分配線，在兩位參與者之間移動。',
     figureCaption: '同一組物品，不只一種公平。',
@@ -44,6 +53,15 @@ const locales = {
     labLabel: 'Open allocation lab',
     labUrl: 'https://fairallocation.kuan216.win/en',
     kicker: 'A guide to the research',
+    advisorsLabel: 'Advisors',
+    creditSeparator: ': ',
+    firstAdvisorDepartment: 'NTOU Department of Computer Science and Engineering',
+    firstAdvisorName: 'Professor 林莊傑',
+    secondAdvisorDepartment: 'NYCU Institute of Information Management',
+    secondAdvisorName: 'Professor 陳柏安',
+    studentsLabel: 'Students',
+    studentDepartment: 'NTOU Computer Science and Engineering',
+    studentNames: ['楊子賢', '管于德', '陳羿豪', '吳承睿'],
     start: 'Start reading',
     figureAria: 'Three indivisible goods moving between two people along an allocation line.',
     figureCaption: 'One set of goods. More than one idea of fair.',
@@ -139,6 +157,22 @@ function template(locale, ui, article, articleHtml) {
       <div class="hero-copy">
         <p class="kicker">${ui.kicker}</p>
         <h1 id="research-title">${escapeHtml(article.title)}</h1>
+        <aside class="research-credits" aria-label="${ui.advisorsLabel} / ${ui.studentsLabel}">
+          <div class="credit-group">
+            <p class="credit-label">${ui.advisorsLabel}</p>
+            <div class="credit-content advisor-list">
+              <p><span class="advisor-department">${ui.firstAdvisorDepartment}</span><span class="advisor-person">${ui.creditSeparator}<a href="https://cse.ntou.edu.tw/p/412-1063-12349.php?Lang=zh-tw" target="_blank" rel="noreferrer">${ui.firstAdvisorName}</a></span></p>
+              <p><span class="advisor-department">${ui.secondAdvisorDepartment}</span><span class="advisor-person">${ui.creditSeparator}<a href="https://iim.nycu.edu.tw/iim/ch/app/artwebsite/view?module=artwebsite&amp;id=37975&amp;serno=4cb17686-fcc1-48ac-bc4e-764d07d8555b" target="_blank" rel="noreferrer">${ui.secondAdvisorName}</a></span></p>
+            </div>
+          </div>
+          <div class="credit-group">
+            <p class="credit-label">${ui.studentsLabel}</p>
+            <div class="credit-content student-list">
+              <p class="student-department">${ui.studentDepartment}</p>
+              <ul>${ui.studentNames.map((name) => `<li>${name}</li>`).join('')}</ul>
+            </div>
+          </div>
+        </aside>
         <p class="dek">${escapeHtml(article.description)}</p>
         <a class="start-link" href="#research-article">${ui.start}</a>
       </div>
