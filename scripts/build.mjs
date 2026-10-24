@@ -34,10 +34,8 @@ const locales = {
     studentDepartment: '海大資工',
     studentNames: ['楊子賢', '管于德', '陳羿豪', '吳承睿'],
     start: '開始閱讀',
-    figureAria: '三件不可分割物品沿著分配線，在兩位參與者之間移動。',
-    figureCaption: '同一組物品，不只一種公平。',
-    leftAgent: '參與者 A',
-    rightAgent: '參與者 B',
+    figureSection: '三、為什麼 NSW 很難？',
+    figureAria: '公平分配研究的主視覺圖片。',
     brand: '公平分配研究',
     navLabel: '主選單',
     skip: '跳至主要內容',
@@ -63,10 +61,8 @@ const locales = {
     studentDepartment: 'NTOU Computer Science and Engineering',
     studentNames: ['楊子賢', '管于德', '陳羿豪', '吳承睿'],
     start: 'Start reading',
-    figureAria: 'Three indivisible goods moving between two people along an allocation line.',
-    figureCaption: 'One set of goods. More than one idea of fair.',
-    leftAgent: 'Person A',
-    rightAgent: 'Person B',
+    figureSection: 'III. Why is NSW difficult to maximize?',
+    figureAria: 'Fair allocation research illustration.',
     brand: 'Fair allocation research',
     navLabel: 'Main navigation',
     skip: 'Skip to main content',
@@ -95,7 +91,7 @@ function nodeText(node) {
   return (node.children ?? []).map(nodeText).join('');
 }
 
-function enhanceArticle() {
+function enhanceArticle(ui) {
   return (tree) => {
     const walk = (node) => {
       if (node.type === 'element') {
@@ -111,6 +107,33 @@ function enhanceArticle() {
       }
 
       for (const child of node.children ?? []) walk(child);
+
+      if (!Array.isArray(node.children)) return;
+
+      const sectionIndex = node.children.findIndex((child) =>
+        child.type === 'element'
+        && child.tagName === 'h2'
+        && nodeText(child) === ui.figureSection
+      );
+
+      if (sectionIndex !== -1) {
+        node.children.splice(sectionIndex + 1, 0, {
+          type: 'element',
+          tagName: 'figure',
+          properties: { className: ['article-figure'] },
+          children: [{
+            type: 'element',
+            tagName: 'img',
+            properties: {
+              src: `${ui.assets}/bg.jpeg`,
+              width: 1376,
+              height: 768,
+              alt: ui.figureAria,
+            },
+            children: [],
+          }],
+        });
+      }
     };
 
     walk(tree);
@@ -176,16 +199,6 @@ function template(locale, ui, article, articleHtml) {
         <p class="dek">${escapeHtml(article.description)}</p>
         <a class="start-link" href="#research-article">${ui.start}</a>
       </div>
-
-      <figure class="allocation-figure" aria-label="${ui.figureAria}">
-        <div class="rule" aria-hidden="true"><i></i><span>EF1</span><i></i></div>
-        <div class="allocation-scene" aria-hidden="true">
-          <div class="agent agent-left"><strong>A</strong><span>${ui.leftAgent}</span></div>
-          <div class="goods"><span class="good-one">1</span><span class="good-two">2</span><span class="good-three">3</span></div>
-          <div class="agent agent-right"><strong>B</strong><span>${ui.rightAgent}</span></div>
-        </div>
-        <figcaption>${ui.figureCaption}</figcaption>
-      </figure>
     </section>
 
     <div class="reading-layout">
@@ -212,7 +225,7 @@ for (const [locale, ui] of Object.entries(locales)) {
     .use(remarkMath)
     .use(remarkRehype)
     .use(rehypeKatex)
-    .use(enhanceArticle)
+    .use(enhanceArticle, ui)
     .use(rehypeStringify)
     .process(article.body));
 
@@ -222,6 +235,7 @@ for (const [locale, ui] of Object.entries(locales)) {
 }
 
 await cp(path.join(root, 'src', 'styles.css'), path.join(dist, 'assets', 'styles.css'));
+await cp(path.join(root, 'bg.jpeg'), path.join(dist, 'assets', 'bg.jpeg'));
 await cp(path.join(root, 'node_modules', 'katex', 'dist', 'katex.min.css'), path.join(dist, 'assets', 'katex.min.css'));
 await cp(path.join(root, 'node_modules', 'katex', 'dist', 'fonts'), path.join(dist, 'assets', 'fonts'), { recursive: true });
 await writeFile(path.join(dist, '.nojekyll'), '');
